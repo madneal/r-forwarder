@@ -1,0 +1,33 @@
+{
+    "name": "test",
+    "short_name": "test",
+    "description": "通过七牛云云存储建立你自己的私有图床",
+    "version": "0.0.2",
+    "icons": {
+        "16": "icons/image-16.png",
+        "48": "icons/image-48.png",
+        "64": "icons/image-64.png",
+        "128": "icons/image.png"
+    },
+    "permissions": [
+        "webRequest",
+        "storage",
+        "webRequestBlocking",
+        "browsingData",
+        "<all_urls>"
+    ],
+    "browser_action": {
+        "default_title": "test",
+        "default_icon": "icons/image.png",
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": true
+    },
+    "manifest_version": 2,
+    "homepage_url": "https://github.com/neal1991/image-host",
+    "options_page": "options.html"
+}
