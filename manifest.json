@@ -4,10 +4,10 @@
     "description": "转发 http 请求",
     "version": "0.0.2",
     "icons": {
-        "16": "icons/image-16.png",
-        "48": "icons/image-48.png",
-        "64": "icons/image-64.png",
-        "128": "icons/image.png"
+        "16": "icons/request-16.png",
+        "48": "icons/request-48.png",
+        "64": "icons/request-64.png",
+        "128": "icons/request.png"
     },
     "permissions": [
         "webRequest",
@@ -18,7 +18,7 @@
     ],
     "browser_action": {
         "default_title": "r-forwarder",
-        "default_icon": "icons/image.png",
+        "default_icon": "icons/request.png",
         "default_popup": "popup.html"
     },
     "background": {
@@ -29,5 +29,5 @@
     },
     "manifest_version": 2,
     "homepage_url": "https://github.com/neal1991/image-host",
-    "options_page": "options.html"
+    "options_page": "./pages/options.html"
 }
