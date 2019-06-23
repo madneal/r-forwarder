@@ -17,7 +17,7 @@
         "<all_urls>"
     ],
     "browser_action": {
-        "default_title": "test",
+        "default_title": "r-forwarder",
         "default_icon": "icons/image.png",
         "default_popup": "popup.html"
     },
