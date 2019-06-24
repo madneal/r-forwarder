@@ -2,7 +2,7 @@
     "name": "Request forwarder",
     "short_name": "r-fowarder",
     "description": "转发 http 请求",
-    "version": "0.0.2",
+    "version": "0.0.1",
     "icons": {
         "16": "icons/request-16.png",
         "48": "icons/request-48.png",
@@ -19,7 +19,7 @@
     "browser_action": {
         "default_title": "r-forwarder",
         "default_icon": "icons/request.png",
-        "default_popup": "popup.html"
+        "default_popup": "./pages/popup.html"
     },
     "background": {
         "scripts": [
@@ -29,5 +29,6 @@
     },
     "manifest_version": 2,
     "homepage_url": "https://github.com/neal1991/image-host",
-    "options_page": "./pages/options.html"
+    "options_page": "./pages/options.html",
+    "content_security_policy": "script-src 'self' 'sha256-dqxE6cbFBlR62LlsAs4nkntJmzQVdovSF+cSwQVawt4='"
 }
