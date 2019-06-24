@@ -8,6 +8,26 @@ const requestFilters = {
     types: resourceTypes
 }
 
+const BadgeText = {
+    ERROR = 'Error',
+    OFF = 'OFF',
+    ON = 'ON',
+}
+
+function setIcon(config) {
+    if (config['control'] === BadgeText.OFF) {
+
+    }
+}
+
+
+function setBadgeAndBackgroundColor(text, color) {
+    chrome.browserAction.setBadgeText({
+        text: text
+    });
+    chrome.browserAction.
+}
+
 
 // chrome.webRequest.onBeforeSendHeaders.addListener(
 //     (details) => {
@@ -23,6 +43,8 @@ const requestFilters = {
 //         console.dir(details)
 //         fetch('http://127.0.0.1')
 //     }, { urls: ["<all_urls>"] });
+
+alert('1341234')
 
 chrome.webRequest.onSendHeaders.addListener(
     (details) => {
