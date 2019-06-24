@@ -1,9 +1,16 @@
-export function addConfig(key, value) {
-    chrome.storage.local.set({key: value}, function() {
-        
-    })
+const e = React.createElement;
+const dom = document.querySelector('#options');
+
+class Options extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return e(
+            'button', {}, 'click me'
+        )
+    }
 }
 
-export function getConfig(key) {
-    
-}
+ReactDOM.render(e(Options), dom)
