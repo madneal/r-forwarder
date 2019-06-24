@@ -25,7 +25,9 @@ function setBadgeAndBackgroundColor(text, color) {
     chrome.browserAction.setBadgeText({
         text: text
     });
-    chrome.browserAction.
+    chrome.browserAction.setBackgroundColor({
+        color: color
+    });
 }
 
 
@@ -43,8 +45,6 @@ function setBadgeAndBackgroundColor(text, color) {
 //         console.dir(details)
 //         fetch('http://127.0.0.1')
 //     }, { urls: ["<all_urls>"] });
-
-alert('1341234')
 
 chrome.webRequest.onSendHeaders.addListener(
     (details) => {
