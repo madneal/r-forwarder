@@ -52,7 +52,11 @@ chrome.webRequest.onSendHeaders.addListener(
         rHeaders = details.requestHeaders;
         console.log('sendHeaders');
         console.dir(rHeaders);
-        // type = details.type;
+        type = details.type;
+        // match the given types
+        if (type in types) {
+            
+        }
         // timeStamp = details.timeStamp;
         // url = details.url;
         console.dir(details)
