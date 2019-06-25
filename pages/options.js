@@ -42,6 +42,7 @@ document.querySelector(".save").addEventListener("click", function() {
 
   // save config to chrome storage
   chrome.storage.local.set(data);
+  M.toast({html: '保存成功', inDuration: 50, outDuration: 50});
 });
 
 document.querySelector('.cancel').addEventListener("click", function () {
