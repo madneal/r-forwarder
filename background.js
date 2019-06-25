@@ -25,7 +25,9 @@ function setBadgeAndBackgroundColor(text, color) {
     chrome.browserAction.setBadgeText({
         text: text
     });
-    chrome.browserAction.setBadgeBackgroundColor({ color: color })
+    chrome.browserAction.setBackgroundColor({
+        color: color
+    });
 }
 
 
@@ -44,15 +46,17 @@ function setBadgeAndBackgroundColor(text, color) {
 //         fetch('http://127.0.0.1')
 //     }, { urls: ["<all_urls>"] });
 
-alert('1341234')
-
 chrome.webRequest.onSendHeaders.addListener(
     (details) => {
         // method = details.method;
         rHeaders = details.requestHeaders;
         console.log('sendHeaders');
         console.dir(rHeaders);
-        // type = details.type;
+        type = details.type;
+        // match the given types
+        if (type in types) {
+            
+        }
         // timeStamp = details.timeStamp;
         // url = details.url;
         console.dir(details)
