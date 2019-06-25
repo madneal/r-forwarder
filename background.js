@@ -49,7 +49,7 @@ chrome.storage.local.get("types", function(result) {
       if (isChecked && details.method === "POST") {
         requestBody = details.requestBody;
       }
-    }, { urls: ["<all_urls>"] }, ['requestBody'])
+    }, { urls: ["<all_urls>"] }, ['requestBody']
   );
 
   chrome.webRequest.onSendHeaders.addListener(
