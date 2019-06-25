@@ -15,8 +15,18 @@ const options = [
 ];
 
 document.addEventListener("DOMContentLoaded", function() {
-  var elems = document.querySelector("select");
-  var instances = M.FormSelect.init(elems, options);
+  var elem = document.querySelector("select");
+  chrome.storage.local.get(null, function (items) {
+    if (items !== null & items !== undefined) {
+      const labels = document.querySelectorAll('label');
+      for (const index in labels) {
+        labels[index].className += 'active';
+      }
+    }
+    document.querySelector('#service').value = items.service;
+    document.querySelector('#agentId').value = items.agentId;
+    var instance = M.FormSelect.init(elem, items.types);
+  })
 });
 
 document.querySelector(".save").addEventListener("click", function() {
@@ -33,3 +43,7 @@ document.querySelector(".save").addEventListener("click", function() {
   // save config to chrome storage
   chrome.storage.local.set(data);
 });
+
+document.querySelector('.cancel').addEventListener("click", function () {
+  window.close();
+})

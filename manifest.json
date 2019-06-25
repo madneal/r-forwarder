@@ -18,8 +18,8 @@
     ],
     "browser_action": {
         "default_title": "r-forwarder",
-        "default_icon": "icons/request.png",
-        "default_popup": "./pages/popup.html"
+        "default_icon": "icons/request.png"
+        // "default_popup": "./pages/popup.html"
     },
     "background": {
         "scripts": [

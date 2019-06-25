@@ -17,29 +17,44 @@ let requestFilters = {
   types: ["main_frame"]
 };
 
-chrome.storage.local.get("types", function(result) {
+// chrome.browserAction.onClicked.addListener(function(tab) {
+
+// });
+
+chrome.browserAction.onClicked.addListener(function() {
+  let checked = true;
+  chrome.storage.local.get("isEnable", function(data) {
+    if (data === null || data === undefined) {
+      chrome.storage.local.set({ isEnable: true });
+    } else {
+      checked = !data.isEnable;
+      chrome.storage.local.set({ isEnable: checked });
+    }
+    setIcon(checked);
+  });
+});
+
+chrome.storage.local.get(null, function(result) {
   requestFilters["types"] = result.types;
+
   chrome.webRequest.onSendHeaders.addListener(
     details => {
-      // method = details.method;
-      console.log("filters");
-      console.dir(requestFilters.types);
+      method = details.method;
       rHeaders = details.requestHeaders;
-      console.log("sendHeaders");
-      console.dir(rHeaders);
       type = details.type;
-      console.log(type);
-      // timeStamp = details.timeStamp;
-      // url = details.url;
-      console.dir(details);
+      timeStamp = details.timeStamp;
+      url = details.url;
     },
     requestFilters,
     ["requestHeaders", "extraHeaders"]
   );
 });
 
-function setIcon(config) {
-  if (config["control"] === BadgeText.OFF) {
+function setIcon(isEnable) {
+  if (isEnable) {
+    setBadgeAndBackgroundColor("ON", "#aad");
+  } else {
+    setBadgeAndBackgroundColor("OFF", "#aaa");
   }
 }
 
@@ -47,7 +62,8 @@ function setBadgeAndBackgroundColor(text, color) {
   chrome.browserAction.setBadgeText({
     text: text
   });
-  chrome.browserAction.setBackgroundColor({
+
+  chrome.browserAction.setBadgeBackgroundColor({
     color: color
   });
 }
