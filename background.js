@@ -13,37 +13,68 @@ const resourceTypes = [
   "other"
 ];
 let requestFilters = {
-  urls: ["<all_urls>"],
-  types: ["main_frame"]
+  urls: ["<all_urls>"]
 };
+let isChecked;
+let requestBody;
 
-// chrome.browserAction.onClicked.addListener(function(tab) {
+function getIsEnable() {
+  chrome.storage.local.get("isEnable", function(data) {
+    return data["isEnable"];
+  });
+}
 
-// });
 
 chrome.browserAction.onClicked.addListener(function() {
   let checked = true;
+
   chrome.storage.local.get("isEnable", function(data) {
     if (data === null || data === undefined) {
       chrome.storage.local.set({ isEnable: true });
+      isChecked = true;
     } else {
       checked = !data.isEnable;
       chrome.storage.local.set({ isEnable: checked });
     }
+    isChecked = checked;
     setIcon(checked);
   });
 });
 
-chrome.storage.local.get(null, function(result) {
-  requestFilters["types"] = result.types;
+chrome.storage.local.get("types", function(result) {
+    requestFilters["types"] = result.types;
+
+  chrome.webRequest.onBeforeRequest.addListener(
+    details => {
+      if (isChecked && details.method === "POST") {
+        requestBody = details.requestBody;
+      }
+    }, { urls: ["<all_urls>"] }, ['requestBody'])
+  );
 
   chrome.webRequest.onSendHeaders.addListener(
     details => {
-      method = details.method;
-      rHeaders = details.requestHeaders;
-      type = details.type;
-      timeStamp = details.timeStamp;
-      url = details.url;
+      if (isChecked) {
+        console.log(requestFilters);
+        method = details.method;
+        rHeaders = details.requestHeaders;
+        type = details.type;
+        timeStamp = details.timeStamp;
+        url = details.url;
+        console.log(type);
+        console.dir(rHeaders);
+        const data = {
+          url: url,
+          headers: rHeaders,
+          host: url.split("/")[2],
+          method: method,
+          postdata: ''
+        };
+        if (method === 'POST') {
+          data.postdata = requestBody;
+        }
+        console.dir(data);
+      }
     },
     requestFilters,
     ["requestHeaders", "extraHeaders"]
