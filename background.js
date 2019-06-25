@@ -25,7 +25,7 @@ function setBadgeAndBackgroundColor(text, color) {
     chrome.browserAction.setBadgeText({
         text: text
     });
-    chrome.browserAction.
+    chrome.browserAction.setBadgeBackgroundColor({ color: color })
 }
 
 
