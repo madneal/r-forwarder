@@ -1,16 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>R-forwarder配置页面</title>
-    <link rel="stylesheet" href="options.css">
-    <script src="../lib/react.development.js"></script>
-    <script src="../lib/react-dom.development.js"></script>
+    <link rel="stylesheet" href="../css/materialize.min.css">
+    <script src="../lib/materialize.min.js"></script>
 </head>
+
 <body>
-    <div id="options"></div>
+    <div class="form">
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="service" type="text">
+                        <label for="service">服务地址</label>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="agentId" type="text">
+                        <label for="last_name">Agent ID</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="input-field col s6">
+                <select multiple>
+                    <option value="main_frame" selected>main_frame</option>
+                    <option value="sub_frame" selected>sub_frame</option>
+                    <option value="stylesheet">stylesheet</option>
+                    <option value="script">script</option>
+                    <option value="image">image</option>
+                    <option value="font">stylesheet</option>
+                    <option value="object" selected>object</option>
+                    <option value="xmlhttprequest" selected>xmlhttprequest</option>
+                    <option value="ping">ping</option>
+                    <option value="csp_report" selected>csp_report</option>
+                    <option value="media">media</option>
+                    <option value="websocket">websocket</option>
+                    <option value="other" selected>other</option>
+                </select>
+                <label>选择资源类型</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s3 offset-s4">
+                <button class="btn waves-effect waves-light save" type="submit" name="action">
+                    保存
+                </button>
+            </div>
+        </div>
+    </div>
     <script src="./options.js"></script>
 </body>
 </html>

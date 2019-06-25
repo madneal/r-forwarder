@@ -1,16 +1,35 @@
-const e = React.createElement;
-const dom = document.querySelector('#options');
+const options = [
+  "main_frame",
+  "sub_frame",
+  "stylesheet",
+  "script",
+  "image",
+  "font",
+  "object",
+  "xmlhttprequest",
+  "ping",
+  "csp_report",
+  "media",
+  "websocket",
+  "other"
+];
 
-class Options extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+document.addEventListener("DOMContentLoaded", function() {
+  var elems = document.querySelector("select");
+  var instances = M.FormSelect.init(elems, options);
+});
 
-    render() {
-        return e(
-            'button', {}, 'click me'
-        )
-    }
-}
+document.querySelector(".save").addEventListener("click", function() {
+  var elem = document.querySelector("select");
+  const types = M.FormSelect.getInstance(elem).getSelectedValues();
+  const service = document.querySelector("#service").value;
+  const agentId = document.querySelector("#agentId").value;
+  const data = {
+    service: service,
+    agentId: agentId,
+    types: types
+  };
 
-ReactDOM.render(e(Options), dom)
+  // save config to chrome storage
+  chrome.storage.local.set(data);
+});
