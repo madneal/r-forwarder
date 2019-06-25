@@ -12,6 +12,7 @@ const resourceTypes = [
   "websocket",
   "other"
 ];
+
 let requestFilters = {
   urls: ["<all_urls>"]
 };
@@ -24,6 +25,13 @@ function isEmpty(obj) {
   }
   return false;
 }
+
+chrome.storage.onChanged.addListener(function(changes) {
+  const types = changes.types;
+  requestFilters.types = types;
+  console.log("chrome storage has changed;")
+  console.log(types);
+})
 
 
 chrome.browserAction.onClicked.addListener(function() {
@@ -45,7 +53,7 @@ chrome.browserAction.onClicked.addListener(function() {
 });
 
 chrome.storage.local.get("types", function(result) {
-    requestFilters["types"] = result.types;
+  requestFilters["types"] = result.types;
 
   chrome.webRequest.onBeforeRequest.addListener(
     details => {
