@@ -18,20 +18,23 @@ let requestFilters = {
 let isChecked;
 let requestBody;
 
-function getIsEnable() {
-  chrome.storage.local.get("isEnable", function(data) {
-    return data["isEnable"];
-  });
+function isEmpty(obj) {
+  if (JSON.stringify(obj) === "{}") {
+    return true;
+  }
+  return false;
 }
 
 
 chrome.browserAction.onClicked.addListener(function() {
   let checked = true;
 
-  chrome.storage.local.get("isEnable", function(data) {
-    if (data === null || data === undefined) {
+  chrome.storage.local.get(null, function(data) {
+    if (isEmpty(data)) {
       chrome.storage.local.set({ isEnable: true });
       isChecked = true;
+      // chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
+      chrome.runtime.openOptionsPage();
     } else {
       checked = !data.isEnable;
       chrome.storage.local.set({ isEnable: checked });
