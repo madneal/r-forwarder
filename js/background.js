@@ -33,10 +33,14 @@ function isEmpty(obj) {
 }
 
 chrome.storage.onChanged.addListener(function(changes) {
-  const types = changes.types;
-  requestFilters.types = types;
-  console.log("chrome storage has changed;")
-  console.log(types);
+  // detect the changes and modify the according variable
+  if (changes.hasOwnProperty("types")) {
+    requestFilters.types = changes.types.newValue;
+  }
+
+  if (changes.hasOwnProperty("urls")) {
+    requestFilters.urls = changes.urls.newValue;
+  }
 })
 
 
@@ -60,7 +64,7 @@ chrome.browserAction.onClicked.addListener(function() {
 
 chrome.storage.local.get(null, function(result) {
   requestFilters.types = result.types;
-  // requestFilters.urls = result.urls;
+  requestFilters.urls = result.urls;
   isChecked = result.isEnable;
 
   chrome.webRequest.onBeforeRequest.addListener(
@@ -90,14 +94,12 @@ chrome.storage.local.get(null, function(result) {
           postdata: ''
         }
         if (method === 'POST') {
-          data.postdata = requestBody;
+          requestData.postdata = requestBody;
         }
         console.log(requestData);
       }
     },
-    requestFilters,
-    ["requestHeaders", "extraHeaders"]
-  );
+    requestFilters, ["requestHeaders", "extraHeaders"]);
 });
 
 function setIcon(isEnable) {
