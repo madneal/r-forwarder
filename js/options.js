@@ -23,8 +23,8 @@ document.addEventListener("DOMContentLoaded", function() {
         labels[index].className += 'active';
       }
     }
-    document.querySelector('#service').value = items.service;
-    document.querySelector('#agentId').value = items.agentId;
+    document.querySelector('#service').value = items.service === undefined ? '' : items.service;
+    document.querySelector('#agentId').value = items.agentId === undefined ? '' : items.agentId;
     var instance = M.FormSelect.init(elem, items.types);
     M.updateTextFields();
   })

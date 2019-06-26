@@ -17,7 +17,10 @@ let requestFilters = {
   urls: ["<all_urls>"]
 };
 let isChecked;
-let requestBody;
+
+// use to save requestBody of POST method
+let requestBody = null;
+let requestData = {};
 
 function isEmpty(obj) {
   if (JSON.stringify(obj) === "{}") {
@@ -74,13 +77,13 @@ chrome.storage.local.get("types", function(result) {
         url = details.url;
         console.log(type);
         console.dir(rHeaders);
-        const data = {
+        requestData = {
           url: url,
           headers: rHeaders,
           host: url.split("/")[2],
-          method: method,
+          method: method, 
           postdata: ''
-        };
+        }
         if (method === 'POST') {
           data.postdata = requestBody;
         }
