@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.querySelector('#service').value = items.service;
     document.querySelector('#agentId').value = items.agentId;
     var instance = M.FormSelect.init(elem, items.types);
+    M.updateTextFields();
   })
 });
 
