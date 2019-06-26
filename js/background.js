@@ -15,6 +15,7 @@ const resourceTypes = [
 
 let requestFilters = {
   urls: ["<all_urls>"]
+  // urls: ["https://github.com/*"]
 };
 
 
