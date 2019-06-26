@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     document.querySelector('#service').value = items.service === undefined ? '' : items.service;
     document.querySelector('#agentId').value = items.agentId === undefined ? '' : items.agentId;
+    document.querySelector('#urls').value = items.urls === undefined ? '' : items.urls;
     var instance = M.FormSelect.init(elem, items.types);
     M.updateTextFields();
   })
@@ -35,10 +36,19 @@ document.querySelector(".save").addEventListener("click", function() {
   const types = M.FormSelect.getInstance(elem).getSelectedValues();
   const service = document.querySelector("#service").value;
   const agentId = document.querySelector("#agentId").value;
+  let urls = document.querySelector('#urls').value;
+  urls = urls.split(';');
+  urlArr = [];
+  urls = urls.forEach((ele) => {
+    if (ele) {
+      urlArr.push(ele);
+    }
+  }) 
   const data = {
     service: service,
     agentId: agentId,
-    types: types
+    types: types,
+    urls: urlArr
   };
 
   // save config to chrome storage

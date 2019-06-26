@@ -16,6 +16,8 @@ const resourceTypes = [
 let requestFilters = {
   urls: ["<all_urls>"]
 };
+
+
 let isChecked;
 
 // use to save requestBody of POST method
@@ -55,15 +57,17 @@ chrome.browserAction.onClicked.addListener(function() {
   });
 });
 
-chrome.storage.local.get("types", function(result) {
-  requestFilters["types"] = result.types;
+chrome.storage.local.get(null, function(result) {
+  requestFilters.types = result.types;
+  // requestFilters.urls = result.urls;
+  isChecked = result.isEnable;
 
   chrome.webRequest.onBeforeRequest.addListener(
     details => {
       if (isChecked && details.method === "POST") {
         requestBody = details.requestBody;
       }
-    }, { urls: ["<all_urls>"] }, ['requestBody']
+    }, requestFilters, ['requestBody']
   );
 
   chrome.webRequest.onSendHeaders.addListener(
@@ -87,7 +91,7 @@ chrome.storage.local.get("types", function(result) {
         if (method === 'POST') {
           data.postdata = requestBody;
         }
-        console.dir(data);
+        console.log(requestData);
       }
     },
     requestFilters,
