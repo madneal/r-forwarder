@@ -33,6 +33,7 @@ function isEmpty(obj) {
 }
 
 chrome.storage.onChanged.addListener(function(changes) {
+  console.log("The chrome storage changed!");
   // detect the changes and modify the according variable
   if (changes.hasOwnProperty("types")) {
     requestFilters.types = changes.types.newValue;
@@ -63,11 +64,11 @@ chrome.browserAction.onClicked.addListener(function() {
 });
 
 chrome.storage.local.get(null, function(result) {
-  requestFilters.types = result.types;
-  requestFilters.urls = result.urls;
-  isChecked = result.isEnable;
-  const service = result.service;
-  const agentId = result.agentId;
+  requestFilters.types = result.types ? result.types: null;
+  requestFilters.urls = result.urls ? result.urls : ["<all_urls>"];
+  isChecked = result.isEnable ? result.isEnable : null;
+  const service = result.service ? result.service : null;
+  const agentId = result.agentId ? result.agentId : null;
 
   chrome.webRequest.onBeforeRequest.addListener(
     details => {
@@ -100,6 +101,9 @@ chrome.storage.local.get(null, function(result) {
           requestData.postdata = requestBody;
         }
         console.log(requestData);
+        // postData(service, requestData)
+        //   .then(data => console.log(JSON.stringify(data))) // JSON-string from `response.json()` call
+        //   .catch(error => console.error(error));
       }
     },
     requestFilters, ["requestHeaders", "extraHeaders"]);
@@ -121,6 +125,25 @@ function setBadgeAndBackgroundColor(text, color) {
   chrome.browserAction.setBadgeBackgroundColor({
     color: color
   });
+}
+
+
+
+function postData(url = "", data = {}) {
+  // Default options are marked with *
+  return fetch(url, {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    // mode: "cors", // no-cors, cors, *same-origin
+    // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    // credentials: "same-origin", // include, *same-origin, omit
+    headers: {
+      "Content-Type": "application/json"
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    // redirect: "follow", // manual, *follow, error
+    // referrer: "no-referrer", // no-referrer, *client
+    body: JSON.stringify(data) // body data type must match "Content-Type" header
+  }).then(response => response.json()); // parses JSON response into native JavaScript objects
 }
 
 // chrome.webRequest.onBeforeSendHeaders.addListener(
