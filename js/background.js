@@ -66,6 +66,8 @@ chrome.storage.local.get(null, function(result) {
   requestFilters.types = result.types;
   requestFilters.urls = result.urls;
   isChecked = result.isEnable;
+  const service = result.service;
+  const agentId = result.agentId;
 
   chrome.webRequest.onBeforeRequest.addListener(
     details => {
@@ -90,7 +92,8 @@ chrome.storage.local.get(null, function(result) {
           url: url,
           headers: rHeaders,
           host: url.split("/")[2],
-          method: method, 
+          method: method,
+          agentId: agentId, 
           postdata: ''
         }
         if (method === 'POST') {
