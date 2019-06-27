@@ -127,8 +127,6 @@ function setBadgeAndBackgroundColor(text, color) {
   });
 }
 
-
-
 function postData(url = "", data = {}) {
   // Default options are marked with *
   return fetch(url, {
@@ -155,11 +153,6 @@ function postData(url = "", data = {}) {
 //     },
 //     { urls: ["<all_urls>"] }, ['requestHeaders', 'blocking', 'extraHeaders']);
 
-// chrome.webRequest.onCompleted.addListener(
-//     (details) => {
-//         console.dir(details)
-//         fetch('http://127.0.0.1')
-//     }, { urls: ["<all_urls>"] });
 
 // function setListeners() {
 //     chrome.webRequest.onBeforeSendHeaders.addListener(requestHandler,
