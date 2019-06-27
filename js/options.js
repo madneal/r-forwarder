@@ -14,6 +14,33 @@ const options = [
   "other"
 ];
 
+function createOptions(data) {
+  let optionsEle = [];
+  for (const index in options) {
+    let option = document.createElement('option');
+    option.value = options[index];
+    option.text = options[index];
+    if (options[index] in data) {
+      option.setAttribute('selected');
+    }
+    optionsEle.push(option);
+  }
+  return optionsEle;
+}
+
+function modifyOptions(data, options) {
+  let result = [];
+  for (const key in options) {
+    const option = options[key];
+    if (data.includes(option.value)) {
+      option.setAttribute('selected', '');
+      // option.className = "selected";
+    }
+    result.push(option);
+  }
+  return result;
+}
+
 document.addEventListener("DOMContentLoaded", function() {
   var elem = document.querySelector("select");
   chrome.storage.local.get(null, function (items) {
@@ -26,7 +53,12 @@ document.addEventListener("DOMContentLoaded", function() {
     document.querySelector('#service').value = items.service === undefined ? '' : items.service;
     document.querySelector('#agentId').value = items.agentId === undefined ? '' : items.agentId;
     document.querySelector('#urls').value = items.urls === undefined ? '' : items.urls;
-    var instance = M.FormSelect.init(elem, items.types);
+    // const optionsElement = createOptions(items.types);
+    // elem.(optionsElement);
+    let options = document.querySelectorAll('option');
+    options = modifyOptions(items.types, options);
+    let instance = M.FormSelect.init(elem, options);
+    // elem.material_select();
     M.updateTextFields();
   })
 });
