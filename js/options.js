@@ -32,7 +32,7 @@ function modifyOptions(data, options) {
   let result = [];
   for (const key in options) {
     const option = options[key];
-    if (data.includes(option.value)) {
+    if (data && data.includes(option.value)) {
       option.setAttribute('selected', '');
       // option.className = "selected";
     }

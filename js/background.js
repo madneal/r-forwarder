@@ -20,6 +20,8 @@ let requestFilters = {
 
 
 let isChecked;
+let service;
+let agentId;
 
 // use to save requestBody of POST method
 let requestBody = null;
@@ -38,9 +40,14 @@ chrome.storage.onChanged.addListener(function(changes) {
   if (changes.hasOwnProperty("types")) {
     requestFilters.types = changes.types.newValue;
   }
-
   if (changes.hasOwnProperty("urls")) {
     requestFilters.urls = changes.urls.newValue;
+  }
+  if (changes.hasOwnProperty("service")) {
+    service = changes.service.newValue;
+  }
+  if (changes.hasOwnProperty("agentId")) {
+    agentId = changes.agentId.newValue;
   }
 })
 
@@ -67,8 +74,8 @@ chrome.storage.local.get(null, function(result) {
   requestFilters.types = result.types ? result.types: null;
   requestFilters.urls = result.urls ? result.urls : ["<all_urls>"];
   isChecked = result.isEnable ? result.isEnable : null;
-  const service = result.service ? result.service : null;
-  const agentId = result.agentId ? result.agentId : null;
+  service = result.service ? result.service : null;
+  agentId = result.agentId ? result.agentId : null;
 
   chrome.webRequest.onBeforeRequest.addListener(
     details => {
@@ -101,9 +108,22 @@ chrome.storage.local.get(null, function(result) {
           requestData.postdata = requestBody;
         }
         console.log(requestData);
-        // postData(service, requestData)
-        //   .then(data => console.log(JSON.stringify(data))) // JSON-string from `response.json()` call
-        //   .catch(error => console.error(error));
+        // http://192.168.30.14:8888/api
+        postData(service, requestData)
+          .then(data => {
+            const result = data;
+            if (result.result === 'success') {
+              if (result.code === 0) {
+                console.log("上传成功");
+              } else if (result.code === 1) {
+                console.log("不支持的请求方法");
+              } else if (result.code === 2) {
+                console.log("处理请求失败");
+              } else if (result.code === 3) {
+                console.log("存入 mq 失败");
+              }
+            }
+          }) 
       }
     },
     requestFilters, ["requestHeaders", "extraHeaders"]);
@@ -141,7 +161,10 @@ function postData(url = "", data = {}) {
     // redirect: "follow", // manual, *follow, error
     // referrer: "no-referrer", // no-referrer, *client
     body: JSON.stringify(data) // body data type must match "Content-Type" header
-  }).then(response => response.json()); // parses JSON response into native JavaScript objects
+  }).then(response => response.json())
+  .catch(err => {
+    console.error(err);
+  })
 }
 
 // chrome.webRequest.onBeforeSendHeaders.addListener(
