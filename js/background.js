@@ -1,18 +1,3 @@
-// All resource types
-// "main_frame", "sub_frame", "stylesheet", "script", "image", "font", "object",
-//"xmlhttprequest", "ping", "csp_report", "media", "websocket", or "other"
-const resourceTypes = [
-  "main_frame",
-  "sub_frame",
-  "object",
-  "xmlhttprequest",
-  "ping",
-  "csp_report",
-  "media",
-  "websocket",
-  "other"
-];
-
 let requestFilters = {
   urls: ["<all_urls>"],
   types: ["main_frame", "sub_frame", "object", "xmlhttprequest", "csp_report", "other"]
