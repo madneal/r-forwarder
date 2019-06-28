@@ -14,7 +14,8 @@ const resourceTypes = [
 ];
 
 let requestFilters = {
-  urls: ["<all_urls>"]
+  // urls: ["<all_urls>"]
+  urls: [""]
   // urls: ["https://github.com/*"]
 };
 
@@ -49,6 +50,15 @@ chrome.storage.onChanged.addListener(function(changes) {
   if (changes.hasOwnProperty("agentId")) {
     agentId = changes.agentId.newValue;
   }
+  chrome.webRequest.onBeforeRequest.removeListener(beforeRequestHandler);
+  chrome.webRequest.onSendHeaders.removeListener(beforeSendHeaderHandler);
+  chrome.webRequest.onBeforeRequest.addListener(
+    details => beforeRequestHandler(details), requestFilters, ['requestBody']
+  )
+
+  chrome.webRequest.onSendHeaders.addListener(
+    details => beforeSendHeaderHandler(details), requestFilters, ["requestHeaders", "extraHeaders"]
+  )
 })
 
 
@@ -70,63 +80,122 @@ chrome.browserAction.onClicked.addListener(function() {
   });
 });
 
+function beforeSendHeaderHandler(details) {
+  console.log(requestFilters);
+  method = details.method;
+  rHeaders = details.requestHeaders;
+  type = details.type;
+  timeStamp = details.timeStamp;
+  url = details.url;
+  console.log(type);
+  console.dir(rHeaders);
+  requestData = {
+    url: url,
+    headers: rHeaders,
+    host: url.split("/")[2],
+    method: method,
+    agentId: agentId, 
+    postdata: ''
+  }
+  if (method === 'POST') {
+    requestData.postdata = requestBody;
+  }
+  console.log(requestData);
+  // http://192.168.30.14:8888/api
+  postData(service, requestData)
+    .then(data => {
+      const result = data;
+      if (result && result.result === 'success') {
+        if (result.code === 0) {
+          console.log("上传成功");
+        } else if (result.code === 1) {
+          console.log("不支持的请求方法");
+        } else if (result.code === 2) {
+          console.log("处理请求失败");
+        } else if (result.code === 3) {
+          console.log("存入 mq 失败");
+        }
+      }
+    }) 
+}
+
+function beforeRequestHandler(details) {
+  if (isChecked && details && details.method === "POST") {
+    const body = JSON.stringify(details.requestBody);
+    requestBody = body;
+    console.log(requestBody);
+  }
+}
+
 chrome.storage.local.get(null, function(result) {
   requestFilters.types = result.types ? result.types: null;
-  requestFilters.urls = result.urls ? result.urls : ["<all_urls>"];
+  requestFilters.urls = result.urls ? result.urls : null;
   isChecked = result.isEnable ? result.isEnable : null;
   service = result.service ? result.service : null;
   agentId = result.agentId ? result.agentId : null;
 
   chrome.webRequest.onBeforeRequest.addListener(
-    details => {
-      if (isChecked && details.method === "POST") {
-        requestBody = details.requestBody;
-      }
-    }, requestFilters, ['requestBody']
-  );
+    details => onBeforeRequestHandler(details), requestFilters, ['requestBody']
+  )
 
   chrome.webRequest.onSendHeaders.addListener(
-    details => {
-      if (isChecked) {
-        console.log(requestFilters);
-        method = details.method;
-        rHeaders = details.requestHeaders;
-        type = details.type;
-        timeStamp = details.timeStamp;
-        url = details.url;
-        console.log(type);
-        console.dir(rHeaders);
-        requestData = {
-          url: url,
-          headers: rHeaders,
-          host: url.split("/")[2],
-          method: method,
-          agentId: agentId, 
-          postdata: ''
-        }
-        if (method === 'POST') {
-          requestData.postdata = requestBody;
-        }
-        console.log(requestData);
-        // http://192.168.30.14:8888/api
-        postData(service, requestData)
-          .then(data => {
-            const result = data;
-            if (result.result === 'success') {
-              if (result.code === 0) {
-                console.log("上传成功");
-              } else if (result.code === 1) {
-                console.log("不支持的请求方法");
-              } else if (result.code === 2) {
-                console.log("处理请求失败");
-              } else if (result.code === 3) {
-                console.log("存入 mq 失败");
-              }
-            }
-          }) 
-      }
-    },
-    requestFilters, ["requestHeaders", "extraHeaders"]);
+    details => sendHeaderHandler(details), requestFilters, ["requestHeaders", "extraHeaders"]
+  )
+
+  // chrome.webRequest.onBeforeRequest.addListener(
+  //   details => {
+  //     if (isChecked && details && details.method === "POST") {
+  //       // const body = decodeURIComponent(String.fromCharCode.apply(null,
+  //       //   new Uint8Array(details.requestBody.raw[0].bytes)));
+  //       const body = JSON.stringify(details.requestBody);
+  //       requestBody = body;
+  //       console.log(requestBody);
+  //     }
+  //   }, requestFilters, ['requestBody']
+  // );
+
+  // chrome.webRequest.onSendHeaders.addListener(
+  //   details => {
+  //     if (isChecked && details) {
+  //       console.log(requestFilters);
+  //       method = details.method;
+  //       rHeaders = details.requestHeaders;
+  //       type = details.type;
+  //       timeStamp = details.timeStamp;
+  //       url = details.url;
+  //       console.log(type);
+  //       console.dir(rHeaders);
+  //       requestData = {
+  //         url: url,
+  //         headers: rHeaders,
+  //         host: url.split("/")[2],
+  //         method: method,
+  //         agentId: agentId, 
+  //         postdata: ''
+  //       }
+  //       if (method === 'POST') {
+  //         requestData.postdata = requestBody;
+  //       }
+  //       console.log(requestData);
+  //       // http://192.168.30.14:8888/api
+  //       postData(service, requestData)
+  //         .then(data => {
+  //           const result = data;
+  //           if (result && result.result === 'success') {
+  //             if (result.code === 0) {
+  //               console.log("上传成功");
+  //             } else if (result.code === 1) {
+  //               console.log("不支持的请求方法");
+  //             } else if (result.code === 2) {
+  //               console.log("处理请求失败");
+  //             } else if (result.code === 3) {
+  //               console.log("存入 mq 失败");
+  //             }
+  //           }
+  //         }) 
+  //     }
+  //   },
+  //   requestFilters, ["requestHeaders", "extraHeaders"]);
 });
 
 function setIcon(isEnable) {
