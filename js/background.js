@@ -146,5 +146,3 @@ function postData(url = "", data = {}) {
       console.error(err);
     })
 }
-
-
