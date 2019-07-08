@@ -12,6 +12,7 @@ let agentId;
 let requestBody = null;
 let requestData = {};
 
+// judge if object is empty
 function isEmpty(obj) {
   if (JSON.stringify(obj) === "{}") {
     return true;
@@ -19,6 +20,7 @@ function isEmpty(obj) {
   return false;
 }
 
+// change requestFilter when chrome storage changes
 chrome.storage.onChanged.addListener(function (changes) {
   console.log("The chrome storage changed!");
   // detect the changes and modify the according variable
@@ -50,7 +52,7 @@ chrome.storage.onChanged.addListener(function (changes) {
   )
 })
 
-
+//browserAction to control ON and OFF
 chrome.browserAction.onClicked.addListener(function () {
   let checked = true;
 
@@ -69,6 +71,7 @@ chrome.browserAction.onClicked.addListener(function () {
   });
 });
 
+// onBeforeHandler listener
 function beforeSendHeaderHandler(details) {
   console.log(requestFilters);
   method = details.method;
