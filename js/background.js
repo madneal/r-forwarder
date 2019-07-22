@@ -73,6 +73,9 @@ chrome.browserAction.onClicked.addListener(function () {
 
 // onBeforeHandler listener
 function beforeSendHeaderHandler(details) {
+  if (details.url == service) {
+    return
+  }
   console.log(requestFilters);
   method = details.method;
   rHeaders = details.requestHeaders;
@@ -138,7 +141,7 @@ function beforeSendHeaderHandler(details) {
 }
 
 function beforeRequestHandler(details) {
-  if (isChecked && details && details.method === "POST") {
+  if (isChecked && details && details.method === "POST" && details.url != service) {
     const body = JSON.stringify(details.requestBody);
     requestBody = body;
     console.log(requestBody);
