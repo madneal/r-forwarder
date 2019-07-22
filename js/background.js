@@ -94,9 +94,17 @@ function beforeSendHeaderHandler(details) {
   }
   console.log(requestData);
   // http://192.168.30.14:8888/api
-  postData(service, requestData)
-    .then(data => {
-      const result = data;
+
+  fetch(service, {
+    method: "POST", 
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(requestData) 
+  }).then(response => {
+    if (response) {
+      console.log(response.json());
+      const result = response.json();
       if (result && result.result === 'success') {
         if (result.code === 0) {
           console.log("上传成功");
@@ -107,8 +115,26 @@ function beforeSendHeaderHandler(details) {
         } else if (result.code === 3) {
           console.log("存入 mq 失败");
         }
-      }
+    }
+  }}).catch(err => {
+      console.error(err);
     })
+
+//   postData(service, requestData)
+//     .then(data => {
+//       const result = data;
+//       if (result && result.result === 'success') {
+//         if (result.code === 0) {
+//           console.log("上传成功");
+//         } else if (result.code === 1) {
+//           console.log("不支持的请求方法");
+//         } else if (result.code === 2) {
+//           console.log("处理请求失败");
+//         } else if (result.code === 3) {
+//           console.log("存入 mq 失败");
+//         }
+//       }
+//     })
 }
 
 function beforeRequestHandler(details) {
@@ -137,14 +163,14 @@ function setBadgeAndBackgroundColor(text, color) {
   });
 }
 
-function postData(url = "", data = {}) {
+function postData(url, data) {
   return fetch(url, {
     method: "POST", 
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(data) 
-  }).then(response => response.json())
+  }).then(response => response != "" ? response.json() : "{}")
     .catch(err => {
       console.error(err);
     })
