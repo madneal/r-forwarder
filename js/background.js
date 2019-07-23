@@ -37,19 +37,21 @@ chrome.storage.onChanged.addListener(function (changes) {
     agentId = changes.agentId.newValue;
   }
 
-  if (chrome.webRequest.onBeforeRequest.hasListener(beforeRequestHandler)) {
-    chrome.webRequest.onSendHeaders.removeListener(beforeSendHeaderHandler);
+  if (changes.hasOwnProperty("types") || changes.hasOwnProperty("urls")) {
+    if (chrome.webRequest.onBeforeRequest.hasListener(beforeRequestHandler)) {
+      chrome.webRequest.onSendHeaders.removeListener(beforeSendHeaderHandler);
+    }
+    if (chrome.webRequest.onBeforeRequest.hasListener(beforeRequestHandler)) {
+      chrome.webRequest.onBeforeRequest.removeListener(beforeRequestHandler);
+    }
+  
+    chrome.webRequest.onBeforeRequest.addListener(
+      beforeRequestHandler, requestFilters, ['requestBody']
+    )
+    chrome.webRequest.onSendHeaders.addListener(
+      beforeSendHeaderHandler, requestFilters, ["requestHeaders", "extraHeaders"]
+    )
   }
-  if (chrome.webRequest.onBeforeRequest.hasListener(beforeRequestHandler)) {
-    chrome.webRequest.onBeforeRequest.removeListener(beforeRequestHandler);
-  }
-
-  chrome.webRequest.onBeforeRequest.addListener(
-    beforeRequestHandler, requestFilters, ['requestBody']
-  )
-  chrome.webRequest.onSendHeaders.addListener(
-    beforeSendHeaderHandler, requestFilters, ["requestHeaders", "extraHeaders"]
-  )
 })
 
 //browserAction to control ON and OFF
