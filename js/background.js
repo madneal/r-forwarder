@@ -60,7 +60,6 @@ chrome.browserAction.onClicked.addListener(function () {
     if (isEmpty(data)) {
       chrome.storage.local.set({ isEnable: true });
       isChecked = true;
-      // chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
       chrome.runtime.openOptionsPage();
     } else {
       checked = !data.isEnable;
@@ -71,12 +70,22 @@ chrome.browserAction.onClicked.addListener(function () {
   });
 });
 
+// judge if the two urls has the common host
+function isCommonHost(url, url1) {
+  const urlA = new URL(url);
+  const urlB = new URL(url1);
+  return urlA.host === urlB.host
+}
+
 // onBeforeHandler listener
 function beforeSendHeaderHandler(details) {
-  if (details.url == service) {
+  if (!isChecked) {
     return
   }
-  console.log(requestFilters);
+  // ignore the request to the service
+  if (details.url && service && isCommonHost(details.url, service)) {
+    return
+  }
   method = details.method;
   rHeaders = details.requestHeaders;
   type = details.type;
@@ -96,8 +105,11 @@ function beforeSendHeaderHandler(details) {
     requestData.postdata = requestBody;
   }
   console.log(requestData);
-  // http://192.168.30.14:8888/api
-
+  if (service === undefined) {
+    chrome.storage.local.get("service", result => {
+      service = result.service;
+    })
+  }
   fetch(service, {
     method: "POST", 
     headers: {
@@ -106,7 +118,7 @@ function beforeSendHeaderHandler(details) {
     body: JSON.stringify(requestData) 
   }).then(response => {
     if (response && response.text()) {
-      const result = JSON.parse(response.text);
+      const result = JSON.parse(response.text());
       if (result && result.result === 'success') {
         if (result.code === 0) {
           console.log("上传成功");
@@ -119,27 +131,17 @@ function beforeSendHeaderHandler(details) {
         }
     }
   }}).catch(err => {
+      console.log(response.text());
       console.error(err);
     })
-
-//   postData(service, requestData)
-//     .then(data => {
-//       const result = data;
-//       if (result && result.result === 'success') {
-//         if (result.code === 0) {
-//           console.log("上传成功");
-//         } else if (result.code === 1) {
-//           console.log("不支持的请求方法");
-//         } else if (result.code === 2) {
-//           console.log("处理请求失败");
-//         } else if (result.code === 3) {
-//           console.log("存入 mq 失败");
-//         }
-//       }
-//     })
 }
 
 function beforeRequestHandler(details) {
+  if (isChecked === undefined) {
+    chrome.storage.local.get("isEnable", result => {
+      isChecked = result.isEnable;
+    })
+  }
   if (isChecked && details && details.method === "POST" && details.url != service) {
     const body = JSON.stringify(details.requestBody);
     requestBody = body;
@@ -163,17 +165,4 @@ function setBadgeAndBackgroundColor(text, color) {
   chrome.browserAction.setBadgeBackgroundColor({
     color: color
   });
-}
-
-function postData(url, data) {
-  return fetch(url, {
-    method: "POST", 
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data) 
-  }).then(response => response != "" ? response.json() : "{}")
-    .catch(err => {
-      console.error(err);
-    })
 }

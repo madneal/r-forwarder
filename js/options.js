@@ -37,7 +37,6 @@ function modifyOptions(data, options) {
     const option = options[key];
     if (data && data.includes(option.value)) {
       option.setAttribute('selected', '');
-      // option.className = "selected";
     }
     result.push(option);
   }
