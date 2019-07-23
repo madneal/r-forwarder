@@ -105,9 +105,8 @@ function beforeSendHeaderHandler(details) {
     },
     body: JSON.stringify(requestData) 
   }).then(response => {
-    if (response) {
-      console.log(response.json());
-      const result = response.json();
+    if (response && response.text()) {
+      const result = JSON.parse(response.text);
       if (result && result.result === 'success') {
         if (result.code === 0) {
           console.log("上传成功");
