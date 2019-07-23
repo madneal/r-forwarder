@@ -79,7 +79,12 @@ function isCommonHost(url, url1) {
 
 // onBeforeHandler listener
 function beforeSendHeaderHandler(details) {
-  if (!isChecked) {
+  if (isChecked === undefined) {
+    chrome.storage.local.get("isEnable", result => {
+      isChecked = result.isEnable;
+    })
+  }
+  if (isChecked === false) {
     return
   }
   // ignore the request to the service
@@ -131,7 +136,6 @@ function beforeSendHeaderHandler(details) {
         }
     }
   }}).catch(err => {
-      console.log(response.text());
       console.error(err);
     })
 }
