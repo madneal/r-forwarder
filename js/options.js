@@ -30,6 +30,9 @@ function createOptions(data) {
 
 function modifyOptions(data, options) {
   let result = [];
+  if (!data) {
+    data = ["main_frame", "sub_frame", "xmlhttprequest"];
+  }
   for (const key in options) {
     const option = options[key];
     if (data && data.includes(option.value)) {
