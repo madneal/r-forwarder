@@ -149,7 +149,12 @@ function beforeRequestHandler(details) {
     })
   }
   if (isChecked && details && details.method === "POST" && details.url != service) {
-    const body = JSON.stringify(details.requestBody);
+    let body;
+    if (details.requestBody.formData) {
+      body = JSON.stringify(details.requestBody.formData);
+    } else {
+      body = "";
+    }
     requestBody = body;
     console.log(requestBody);
   }
