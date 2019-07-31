@@ -156,7 +156,20 @@ function beforeRequestHandler(details) {
     let body;
     if (details.requestBody.formData) {
       body = JSON.stringify(details.requestBody.formData);
-    } else {
+    } else if (details.requestBody.raw) {
+      body = decodeURIComponent(String.fromCharCode.apply(null,
+         new Uint8Array(details.requestBody.raw[0].bytes)));
+      if (body.indexOf("&") !== -1) {
+        arr = body.split("&");
+        obj = {};
+        arr.forEach(ele => {
+            tmp = ele.split("=");
+            obj[tmp[0]] = tmp[1];
+        })
+        body = JSON.stringify(obj);
+      }
+    } 
+    else {
       body = "";
     }
     requestBody = body;
