@@ -124,20 +124,24 @@ function beforeSendHeaderHandler(details) {
     },
     body: JSON.stringify(requestData) 
   }).then(response => {
-    if (response && response.text()) {
-      const result = JSON.parse(response.text());
-      if (result && result.result === 'success') {
-        if (result.code === 0) {
-          console.log("上传成功");
-        } else if (result.code === 1) {
-          console.log("不支持的请求方法");
-        } else if (result.code === 2) {
-          console.log("处理请求失败");
-        } else if (result.code === 3) {
-          console.log("存入 mq 失败");
-        }
+    if (response.ok) {
+      return response.text()
     }
-  }}).catch(err => {
+}).then(resTxt => {
+    const result = JSON.parse(resTxt);
+    if (result && result.result === 'success') {
+      if (result.code === 0) {
+        console.log("上传成功");
+      } else if (result.code === 1) {
+        console.log("不支持的请求方法");
+      } else if (result.code === 2) {
+        console.log("处理请求失败");
+      } else if (result.code === 3) {
+        console.log("存入 mq 失败");
+      }
+  }
+})
+.catch(err => {
       console.error(err);
     })
 }
