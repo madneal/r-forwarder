@@ -172,7 +172,7 @@ function beforeRequestHandler(details) {
     else {
       body = "";
     }
-    requestBody = body;
+    requestBody = btoa(body);
     console.log(requestBody);
   }
 }
