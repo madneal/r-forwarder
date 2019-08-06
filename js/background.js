@@ -106,7 +106,8 @@ function beforeSendHeaderHandler(details) {
     host: url.split("/")[2],
     method: method,
     agentId: agentId,
-    postdata: ''
+    postdata: '',
+    t: (new Date()).getTime()
   }
   if (method === 'POST') {
     requestData.postdata = requestBody;
