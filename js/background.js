@@ -12,6 +12,7 @@ let agentId;
 let requestBody = null;
 let requestData = {};
 
+// check if listeners exist, if not add corresponding listeners
 if (!chrome.webRequest.onSendHeaders.hasListener(beforeSendHeaderHandler)) {
   chrome.webRequest.onSendHeaders.addListener(
     beforeSendHeaderHandler, requestFilters, ["requestHeaders", "extraHeaders"]
@@ -100,6 +101,8 @@ function beforeSendHeaderHandler(details) {
   }
   if (isChecked === false) {
     return
+  } else {
+    setData();
   }
   // ignore the request to the service
   if (details.url && service && isCommonHost(details.url, service)) {
@@ -165,6 +168,11 @@ function beforeRequestHandler(details) {
       isChecked = result.isEnable;
     })
   }
+  if (isChecked === false) {
+    return
+  } else {
+    setData();
+  }
   if (isChecked && details && details.method === "POST" && details.url != service) {
     let body;
     if (details.requestBody.formData) {
@@ -216,4 +224,15 @@ function base64EncodeUnicode(str) {
   });
 
   return btoa(utf8Bytes);
+}
+
+function setData() {
+  chrome.storage.local.get(null, function(data) {
+    if (data.service) {
+      service = data.service;
+    }
+    if (data.agentId) {
+      agentId = data.agentId;
+    }
+  })
 }
