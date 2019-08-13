@@ -12,6 +12,18 @@ let agentId;
 let requestBody = null;
 let requestData = {};
 
+if (!chrome.webRequest.onSendHeaders.hasListener(beforeSendHeaderHandler)) {
+  chrome.webRequest.onSendHeaders.addListener(
+    beforeSendHeaderHandler, requestFilters, ["requestHeaders", "extraHeaders"]
+  )
+}
+
+if (!chrome.webRequest.onBeforeRequest.hasListener(beforeRequestHandler)) {
+  chrome.webRequest.onBeforeRequest.addListener(
+    beforeRequestHandler, requestFilters, ['requestBody']
+  )
+}
+
 // judge if object is empty
 function isEmpty(obj) {
   if (JSON.stringify(obj) === "{}") {
@@ -38,7 +50,7 @@ chrome.storage.onChanged.addListener(function (changes) {
   }
 
   if (changes.hasOwnProperty("types") || changes.hasOwnProperty("urls")) {
-    if (chrome.webRequest.onBeforeRequest.hasListener(beforeRequestHandler)) {
+    if (chrome.webRequest.onSendHeaders.hasListener(beforeSendHeaderHandler)) {
       chrome.webRequest.onSendHeaders.removeListener(beforeSendHeaderHandler);
     }
     if (chrome.webRequest.onBeforeRequest.hasListener(beforeRequestHandler)) {
