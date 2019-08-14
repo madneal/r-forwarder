@@ -52,16 +52,14 @@ document.addEventListener("DOMContentLoaded", function() {
         labels[index].className += 'active';
       }
     }
-    document.querySelector('#service').value = items.service === undefined ? '' : items.service;
+    document.querySelector('#service').value = items.service === undefined ? "http://29.3.216.239:8000/api" : items.service;
     document.querySelector('#agentId').value = items.agentId === undefined ? '' : items.agentId;
     document.querySelector('#urls').value = items.urls === undefined ? '' : items.urls;
-    // const optionsElement = createOptions(items.types);
-    // elem.(optionsElement);
+
     let options = document.querySelectorAll('option');
     options = modifyOptions(items.types, options);
     let instance = M.FormSelect.init(elem, options);
-    // elem.material_select();
-    M.updateTextFields();
+    M.updateTextFields();  
   })
 });
 

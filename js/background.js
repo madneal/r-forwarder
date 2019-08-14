@@ -186,25 +186,22 @@ function beforeRequestHandler(details) {
     setData();
   }
   if (isChecked && details && details.method === "POST" && details.url != service) {
-    let body;
+    let body = "";
     if (details.requestBody.formData) {
-      body = JSON.stringify(details.requestBody.formData);
+      formData = details.requestBody.formData;
+      for (const key in formData) {
+        body += key + "=" + formData[key] + "&"
+      }
+      if (body[body.length - 1] === "&") {
+        body = body.substr(0, body.length - 1);
+      }
     } else if (details.requestBody.raw) {
       body = decodeURIComponent(String.fromCharCode.apply(null,
          new Uint8Array(details.requestBody.raw[0].bytes)));
-      if (body.indexOf("&") !== -1) {
-        arr = body.split("&");
-        obj = {};
-        arr.forEach(ele => {
-            tmp = ele.split("=");
-            obj[tmp[0]] = tmp[1];
-        })
-        body = JSON.stringify(obj);
-      }
-    } 
-    else {
+    } else {
       body = "";
     }
+    console.log(body);
     requestBody = base64EncodeUnicode(body);
     console.log(requestBody);
   }
