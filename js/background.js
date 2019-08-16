@@ -156,7 +156,13 @@ function beforeSendHeaderHandler(details) {
       return response.text()
     }
 }).then(resTxt => {
-    const result = JSON.parse(resTxt);
+    let result;
+    if (isJson(resTxt)) {
+      result = JSON.parse(resTxt);
+    } else {
+      console.error(resTxt);
+      console.error("There is error for request for " + service);
+    }
     if (result && result.result === 'success') {
       if (result.code === 0) {
         console.log("上传成功");
@@ -233,6 +239,23 @@ function base64EncodeUnicode(str) {
   });
 
   return btoa(utf8Bytes);
+}
+
+// judge if the str is a valid JSON string
+function isJson(str) {
+  if (typeof str === "string") {
+    try {
+      const obj = JSON.parse(str);
+      if (typeof obj == 'object' && obj) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch(e) {
+      return false;
+    }
+  }
+  return false;
 }
 
 function setData() {
