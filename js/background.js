@@ -5,6 +5,7 @@ let requestFilters = {
 
 const matched = navigator.userAgent.toLowerCase().match(/chrome\/([\d.]+)/);
 const version = matched ? +(matched[1].split('.')[0]) : 0;
+const headers = version >= 72 ? ["requestHeaders", "extraHeaders"] : ["requestHeaders"];
 
 let isChecked;
 let service;
@@ -16,10 +17,6 @@ let requestData = {};
 
 // check if listeners exist, if not add corresponding listeners
 if (!chrome.webRequest.onSendHeaders.hasListener(beforeSendHeaderHandler)) {
-  let headers = ["requestHeaders"];
-  if (version >= 72) {
-    headers.push("extraHeaders");
-  }
   chrome.webRequest.onSendHeaders.addListener(
     beforeSendHeaderHandler, requestFilters, headers
   )
@@ -67,11 +64,6 @@ chrome.storage.onChanged.addListener(function (changes) {
     chrome.webRequest.onBeforeRequest.addListener(
       beforeRequestHandler, requestFilters, ['requestBody']
     )
-
-    let headers = ["requestHeaders"];
-    if (version >= 72) {
-      headers.push("extraHeaders");
-    }
 
     chrome.webRequest.onSendHeaders.addListener(
       beforeSendHeaderHandler, requestFilters, headers
