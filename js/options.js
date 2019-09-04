@@ -86,10 +86,10 @@ document.querySelector(".save").addEventListener("click", function() {
   // save config to chrome storage
   chrome.storage.local.set(data);
   let message = "保存成功";
-  if (agentId === "") {
-    message = "保存失败，请填写agentId!!"
+  if (!/[a-zA-Z]+\d+/.test(agentId)) {
+    message = "保存失败，请填写正确的 agentId!!"
   }
-  M.toast({html: message, inDuration: 50, outDuration: 50, displayLength: 1000});
+  M.toast({html: message, inDuration: 100, outDuration: 100, displayLength: 2000});
 });
 
 document.querySelector('.cancel').addEventListener("click", function () {
