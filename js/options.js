@@ -87,7 +87,7 @@ document.querySelector(".save").addEventListener("click", function() {
   chrome.storage.local.set(data);
   let message = "保存成功";
   if (!/[a-zA-Z]+\d+/.test(agentId)) {
-    message = "保存失败，请填写正确的 agentId!!"
+    message = "保存失败，agentId 请填写 UM 号!!"
   }
   M.toast({html: message, inDuration: 100, outDuration: 100, displayLength: 2000});
 });
