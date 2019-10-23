@@ -2,7 +2,7 @@
     "name": "Request forwarder",
     "short_name": "r-fowarder",
     "description": "转发 http 请求",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "icons": {
         "16": "icons/request-16.png",
         "48": "icons/request-48.png",
