@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
         labels[index].className += 'active';
       }
     }
-    document.querySelector('#service').value = items.service === undefined ? "http://29.3.216.239:8000/api" : items.service;
+    document.querySelector('#service').value = items.service === undefined ? "http://hydra.qa.pab.com.cn/api" : items.service;
     document.querySelector('#agentId').value = items.agentId === undefined ? '' : items.agentId;
     document.querySelector('#urls').value = items.urls === undefined ? '' : items.urls;
 
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function() {
 document.querySelector(".save").addEventListener("click", function() {
   var elem = document.querySelector("select");
   const types = M.FormSelect.getInstance(elem).getSelectedValues();
-  const service = document.querySelector("#service").value;
+  let service = document.querySelector("#service").value;
   const agentId = document.querySelector("#agentId").value;
   let urls = document.querySelector('#urls').value;
   urls = urls.split(';');
@@ -85,13 +85,60 @@ document.querySelector(".save").addEventListener("click", function() {
 
   // save config to chrome storage
   chrome.storage.local.set(data);
-  let message = "保存成功";
-  if (!/[a-zA-Z]+\d+/.test(agentId)) {
-    message = "保存失败，agentId 请填写 UM 号!!"
-  }
-  M.toast({html: message, inDuration: 100, outDuration: 100, displayLength: 2000});
+
+  let body = '{"um":"' + agentId + '"}'
+  
+  service = service.replace("api", "saveOptions");
+
+fetch(service, {
+    method: "POST", 
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body) 
+  }).then(response => {
+    if (response.ok) {
+      return response.text()
+    }
+}).then(resTxt => {
+    let result;
+    if (isJson(resTxt)) {
+      result = JSON.parse(resTxt);
+    } else {
+      console.error(resTxt);
+      console.error("There is error for request for " + service);
+    }
+    M.toast({html: result.reason, inDuration: 100, outDuration: 100, displayLength: 2000});
+})
+.catch(err => {
+      console.error(err);
+})
+
+
+  // let message = "保存成功";
+  // if (!/[a-zA-Z]+\d+/.test(agentId)) {
+  //   message = "保存失败，agentId 请填写 UM 号!!"
+  // }
+  // M.toast({html: message, inDuration: 100, outDuration: 100, displayLength: 2000});
 });
 
 document.querySelector('.cancel').addEventListener("click", function () {
   window.close();
 })
+
+// judge if the str is a valid JSON string
+function isJson(str) {
+  if (typeof str === "string") {
+    try {
+      const obj = JSON.parse(str);
+      if (typeof obj == 'object' && obj) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch(e) {
+      return false;
+    }
+  }
+  return false;
+}
