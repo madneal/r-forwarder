@@ -63,6 +63,24 @@ document.addEventListener("DOMContentLoaded", function() {
   })
 });
 
+let timeoutPromise =(timeout) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("请求超时，确认URL是否正确")
+    }, timeout)
+  })
+}
+
+let requestPromise = (url, body) => {
+  return fetch(url, {
+    method: "POST", 
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body) 
+  });
+}
+
 document.querySelector(".save").addEventListener("click", function() {
   var elem = document.querySelector("select");
   const types = M.FormSelect.getInstance(elem).getSelectedValues();
@@ -90,15 +108,19 @@ document.querySelector(".save").addEventListener("click", function() {
   
   service = service.replace("api", "saveOptions");
 
-fetch(service, {
-    method: "POST", 
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(body) 
-  }).then(response => {
+// fetch(service, {
+//     method: "POST", 
+//     headers: {
+//       "Content-Type": "application/json"
+//     },
+//     body: JSON.stringify(body) 
+//   })
+Promise.race([timeoutPromise(1000), requestPromise(service, body)])
+  .then(response => {
     if (response.ok) {
       return response.text()
+    } else {
+      M.toast({html: "请求失败，请确保填写正确 URL：http://hydra.pab.com.cn/api", inDuration: 100, outDuration: 100, displayLength: 2000});
     }
 }).then(resTxt => {
     let result;
@@ -107,10 +129,12 @@ fetch(service, {
     } else {
       console.error(resTxt);
       console.error("There is error for request for " + service);
+      // M.toast({html: "请求失败，请确保填写正确 URL：http://hydra.pab.com.cn/api", inDuration: 100, outDuration: 100, displayLength: 2000});
     }
     M.toast({html: result.reason, inDuration: 100, outDuration: 100, displayLength: 2000});
 })
 .catch(err => {
+      // M.toast({html: "请求失败，请确保填写正确 URL：http://hydra.pab.com.cn/api", inDuration: 100, outDuration: 100, displayLength: 2000});
       console.error(err);
 })
 
