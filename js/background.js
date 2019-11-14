@@ -86,7 +86,33 @@ chrome.browserAction.onClicked.addListener(function () {
     }
     isChecked = checked;
     setIcon(checked);
+    const status = isChecked ? "1" : "0";
+    const body = '{"um":"' + agentId + '", "status":"' + status + '"}';
+    const url = service.replace("api", "updateStatus");
+    fetch(url, {
+      method: "POST", 
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body) 
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.text()
+      }
+     }).then(resTxt => {
+      let result;
+      if (isJson(resTxt)) {
+        result = JSON.parse(resTxt);
+      } else {
+        console.error(resTxt);
+        console.error("There is error for request for " + service);
+    }
+  })
+  .catch(err => {
+    console.error(err);
   });
+})
 });
 
 // judge if the two urls has the common host
