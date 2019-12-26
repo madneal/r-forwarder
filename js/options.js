@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
         labels[index].className += 'active';
       }
     }
-    document.querySelector('#service').value = items.service === undefined ? "http://hydra.qa.pab.com.cn/api" : items.service;
+    document.querySelector('#service').value = items.service === undefined ? "http://hydra.fat.qa.pab.com.cn/api" : items.service;
     document.querySelector('#agentId').value = items.agentId === undefined ? '' : items.agentId;
     document.querySelector('#urls').value = items.urls === undefined ? '' : items.urls;
 
@@ -120,7 +120,7 @@ Promise.race([timeoutPromise(1000), requestPromise(service, body)])
     if (response.ok) {
       return response.text()
     } else {
-      M.toast({html: "请求失败，请确保填写正确 URL：http://hydra.pab.com.cn/api", inDuration: 100, outDuration: 100, displayLength: 2000});
+      M.toast({html: "请求失败，请确保填写正确 URL：http://hydra.fat.pab.com.cn/api", inDuration: 100, outDuration: 100, displayLength: 2000});
     }
 }).then(resTxt => {
     let result;
@@ -129,12 +129,12 @@ Promise.race([timeoutPromise(1000), requestPromise(service, body)])
     } else {
       console.error(resTxt);
       console.error("There is error for request for " + service);
-      // M.toast({html: "请求失败，请确保填写正确 URL：http://hydra.pab.com.cn/api", inDuration: 100, outDuration: 100, displayLength: 2000});
+      // M.toast({html: "请求失败，请确保填写正确 URL：http://hydra.fat.pab.com.cn/api", inDuration: 100, outDuration: 100, displayLength: 2000});
     }
     M.toast({html: result.reason, inDuration: 100, outDuration: 100, displayLength: 2000});
 })
 .catch(err => {
-      // M.toast({html: "请求失败，请确保填写正确 URL：http://hydra.pab.com.cn/api", inDuration: 100, outDuration: 100, displayLength: 2000});
+      // M.toast({html: "请求失败，请确保填写正确 URL：http://hydra.fat.pab.com.cn/api", inDuration: 100, outDuration: 100, displayLength: 2000});
       console.error(err);
 })
 
